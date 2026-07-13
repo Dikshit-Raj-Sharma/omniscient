@@ -2,8 +2,16 @@ import { pool } from "./index.js";
 const initializeDatabase = async () => {
   try {
     console.log("creating tables");
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`);
     await pool.query(`CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     url TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -15,13 +23,7 @@ const initializeDatabase = async () => {
     price NUMERIC(10,2) NOT NULL,
     scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );`);
-    await pool.query(`CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);`);
+    // await pool.query(`drop table price_history,users,products`);
     console.log("tables created successfully");
   } catch (error) {
     console.error("table creation failed", error);

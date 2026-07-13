@@ -5,7 +5,7 @@ import { scrapePrice } from "../utils/scraper.js";
 import { pool } from "../db/index.js";
 
 const addProduct = asyncHandler(async (req, res) => {
-  const { url, name } = req.body;
+  const { url, name, } = req.body;
 
   if (!url || !name) {
     throw new ApiError(400, "name and url required!");
@@ -25,10 +25,10 @@ const addProduct = asyncHandler(async (req, res) => {
   }
   const newProduct = await pool.query(
     `
-        insert into products (url,name)
-        values($1,$2)
+        insert into products (url,name,user_id)
+        values($1,$2,$3)
         returning id`,
-    [url, name]
+    [url, name,req.user.id]
   );
   if (newProduct.rows.length === 0) {
     throw new ApiError(500, "failed to add product");
