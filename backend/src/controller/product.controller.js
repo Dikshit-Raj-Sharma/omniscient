@@ -43,4 +43,24 @@ const addProduct = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, price, "Product Added successfully"));
 });
 
-export {addProduct}
+const getDashboardData = asyncHandler(async(req,res)=>{
+  const productsResult = await pool.query(`SELECT * FROM products WHERE user_id = $1`,[req.user.id]);
+  if(productsResult.rows.length === 0){
+    return res
+    .status(200)
+    .json(new ApiResponse(200,[],"No Products Added!"));
+  }
+  const dashboardData= await Promise.all(
+    productsResult.rows.map(async (product)=>{
+      const historyQuery=await pool.query(`select price,scraped_at from price_history where product_id=$1 order by scraped_at ASC`,[product.id]);
+      return {
+        ...product,
+        history: historyQuery.rows
+      }
+    })
+  )
+  return res
+    .status(200)
+    .json(new ApiResponse(201,dashboardData,"Information Sent Successfully"));
+})
+export {addProduct,getDashboardData}
