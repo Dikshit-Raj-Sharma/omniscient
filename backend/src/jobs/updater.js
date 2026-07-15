@@ -22,6 +22,7 @@ cron.schedule("*/2 * * * *", async () => {
       if (price) {
         dealStatus = await analyseDeal(product.id, price);
         console.log("Status: " + dealStatus);
+        // TODO: Implement alert deduplication/cooldown mechanism. Currently, this will spam emails every 2 minutes if a deal remains good.
         if (dealStatus == "Good Deal!") {
           await sendDealAlert(product.name, product.url, price);
         }

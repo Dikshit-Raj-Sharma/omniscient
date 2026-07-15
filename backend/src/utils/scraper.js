@@ -28,7 +28,7 @@ const scrapePrice = async (url) => {
     return cleanedCost;
   } catch (error) {
     console.error("scraping failed", error);
-    await page.screenshot({ path: "bot-debug.png" });
+    if(page) await page.screenshot({ path: "bot-debug.png" });
     return null;
   } finally {
     if (browser) await browser.close();
