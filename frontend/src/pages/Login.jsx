@@ -18,8 +18,6 @@ const Login = () => {
     
     try {
       const response = await api.post("/auth/login", { email, password });
-      localStorage.setItem("token", response.data.data.token);
-      
       navigate("/dashboard");
     } catch (err) {
       console.error("Login compilation error:", err);

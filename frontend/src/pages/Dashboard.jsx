@@ -8,17 +8,9 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-    }
     const fetchProducts = async () => {
       try {
-        const response=await api.get("/products/dashboard", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response=await api.get("/products/dashboard");
         setProducts(response.data.data);
 
       } catch(error) {
