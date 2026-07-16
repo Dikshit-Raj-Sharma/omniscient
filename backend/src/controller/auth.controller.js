@@ -33,8 +33,10 @@ const registerUser = asyncHandler(async (req, res) => {
   const token = jwt.sign({ id: createdUser.id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
+  const options = { httpOnly: true, secure: false }
   return res
     .status(201)
+    .cookie("accessToken", token, options)
     .json(
       new ApiResponse(
         201,
@@ -69,9 +71,10 @@ const loginUser = asyncHandler(async (req, res) => {
     expiresIn: "7d",
   });
   delete user.password;
-
+  const options = { httpOnly: true, secure: false }
   return res
     .status(200)
+    .cookie("accessToken", token, options)
     .json(new ApiResponse(200, { user, token }, "User logged in successfully"));
 });
 
